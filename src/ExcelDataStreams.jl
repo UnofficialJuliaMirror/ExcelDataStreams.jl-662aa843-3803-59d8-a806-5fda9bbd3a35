@@ -47,15 +47,17 @@ function ExcelDataStream(
     return ExcelDataStream( df )
 end
 
-Data.schema( ed::ExcelDataStream ) = Data.Schema( eltypes(ed.df), string.(names(df)) )
+Data.isdone( ed::ExcelDataStream, row::Int, col::Int ) = any((row,col).>size(ed.data))
 
-Data.isdone( ed::ExcelDataStream, row::Int, col::Int ) = all(size(ed.df) .<= (row,col))
+Data.schema( ed::ExcelDataStream, ::Type{Data.Field} ) =
+    Data.Schema( string.(names(ed.data)), Vector{DataType}(eltypes(ed.data)), size(ed.data,1) )
 
 Data.streamtype( ::Type{ExcelDataStream}, ::Type{Data.Field} ) = true
 
-Data.streamfrom(ed::ExcelDataStream, ::Type{Data.Field}, ::Type{T}, row::Int, col::Int) where {T} =
-    T(ed.df[row,col])
+Data.streamfrom(ed::ExcelDataStream, ::Type{Data.Field}, ::Type{Nullable{T}}, row::Int, col::Int) where {T} =
+    isna(ed.data[row,col]) ? Nullable{T}() : Nullable{T}(T(ed.data[row,col]))
 
-Data.accesspattern( ::ExcelDataStream ) = Data.RandomAccess
+Data.streamfrom(ed::ExcelDataStream, ::Type{Data.Field}, ::Type{T}, row::Int, col::Int) where {T} =
+    T(ed.data[row,col])
 
 end # module
