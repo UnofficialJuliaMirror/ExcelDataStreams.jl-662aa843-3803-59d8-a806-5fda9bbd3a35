@@ -56,4 +56,6 @@ Data.streamtype( ::Type{ExcelDataStream}, ::Type{Data.Field} ) = true
 Data.streamfrom(ed::ExcelDataStream, ::Type{Data.Field}, ::Type{T}, row::Int, col::Int) where {T} =
     T(ed.df[row,col])
 
+Data.accesspattern( ::ExcelDataStream ) = Data.RandomAccess
+
 end # module
