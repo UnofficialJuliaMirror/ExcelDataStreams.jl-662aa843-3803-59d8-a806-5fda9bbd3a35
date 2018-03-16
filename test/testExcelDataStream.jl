@@ -14,3 +14,4 @@ skipstartrows = 5
 ed = ExcelDataStreams.ExcelDataStream(  url, columnindices, skipstartrows = skipstartrows )
 
 df = Data.stream!( ed, DataFrame )
+assert( all(size(df).>=(7984,2)) )
