@@ -1,6 +1,6 @@
 julia 0.6
 HTTP
 DataStreams
-ExcelReaders 0.8.2 0.8.3
+Taro
 DataFrames
 DataStructures

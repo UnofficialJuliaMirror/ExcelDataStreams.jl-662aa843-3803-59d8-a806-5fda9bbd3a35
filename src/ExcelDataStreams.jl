@@ -3,9 +3,12 @@ module ExcelDataStreams
 # package code goes here
 using HTTP
 using DataStreams
-using ExcelReaders
+using Taro
 using DataFrames
 using DataStructures
+using DataArrays
+
+initialized = false
 
 type ExcelDataStream <: Data.Source
     data::DataFrame
@@ -13,10 +16,13 @@ end
 
 function ExcelDataStream(
     url::AbstractString,
-    columnindices::OrderedDict{Symbol,Int},
     ;
+    columnindices::Vector{Int} = Int[],
+    names::Vector{Symbol} = String[],
+    eltypes::Vector{DataType} = DataType[],
     sheet::String = "Sheet1",
-    skipstartrows::Int = 0,
+    skipstart::Int = 0,
+    nastrings::Vector{String} = String[],
 )
     rawdata = HTTP.request( "GET", url );
     
@@ -24,40 +30,57 @@ function ExcelDataStream(
     open( filename, "w") do file
         write( file, rawdata.body )
     end
+
+    global initialized
+    if !initialized
+        Taro.init()
+        initialized = true
+    end
+    excel = Workbook( filename )
+    sheetdata = getSheet( excel, sheet )
     
-    excel = openxl( filename )
-    sheetdata = readxlsheet( excel, sheet, skipstartrows=skipstartrows );
-    
-    df = DataFrame()
-    for (name,index) in columnindices
-        col = sheetdata[:,index]
-        lastrow = findfirst( isna.(col) )-1
-        col = col[1:lastrow]
-        if size(df,1) > lastrow
-            col = [col; fill(NA,size(df,1) - lastrow)]
-        elseif size(df, 1) < lastrow
-            for i = 1:lastrow-size(df,1)
-                push!( df, fill(NA,size(df,2)) )
+    columns = [DataArray( eltype, 0 ) for eltype in eltypes]
+    done = false
+    rownum = skipstart
+    while !done
+        row = getRow( sheetdata, rownum )
+        done = isnull(row)
+        if !done
+            for i = 1:length(names)
+                cell = getCell( row, columnindices[i] )
+                cellvalue = getCellValue( cell )
+                if cellvalue == nothing || cellvalue in nastrings
+                    push!( columns[i], missing )
+                else
+                    push!( columns[i], cellvalue )
+                    done = false
+                end
             end
+            if done
+                # the last row is all missing
+                [pop!( column ) for column in columns]
+            end
+            rownum += 1
         end
-        types = setdiff(unique(typeof.(col)),[NAtype])
-        length(types) != 1 && error( "Couldn't work out type of column $name" )
-        df[name] = DataVector{types[1]}(col)
+    end
+
+    df = DataFrame()
+    for i = 1:length(names)
+        df[names[i]] = columns[i]
     end
     return ExcelDataStream( df )
 end
 
-Data.isdone( ed::ExcelDataStream, row::Int, col::Int ) = any((row,col).>size(ed.data))
+Data.schema( ed::ExcelDataStream ) =
+    Data.Schema( eltypes(ed.data), string.(names(ed.data)), size(ed.data,1) )
 
-Data.schema( ed::ExcelDataStream, ::Type{Data.Field} ) =
-    Data.Schema( string.(names(ed.data)), Vector{DataType}(eltypes(ed.data)), size(ed.data,1) )
+Data.isdone( ed::ExcelDataStream, row::Int, col::Int ) = any((row,col).>size(ed.data))
 
 Data.streamtype( ::Type{ExcelDataStream}, ::Type{Data.Field} ) = true
 
-Data.streamfrom(ed::ExcelDataStream, ::Type{Data.Field}, ::Type{Nullable{T}}, row::Int, col::Int) where {T} =
-    isna(ed.data[row,col]) ? Nullable{T}() : Nullable{T}(T(ed.data[row,col]))
-
 Data.streamfrom(ed::ExcelDataStream, ::Type{Data.Field}, ::Type{T}, row::Int, col::Int) where {T} =
     T(ed.data[row,col])
+
+Data.accesspattern( ::ExcelDataStream ) = Data.RandomAccess
 
 end # module
