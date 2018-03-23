@@ -15,7 +15,7 @@ type ExcelDataStream <: Data.Source
 end
 
 function ExcelDataStream(
-    url::AbstractString,
+    filename::AbstractString,
     ;
     columnindices::Vector{Int} = Int[],
     names::Vector{Symbol} = String[],
@@ -24,13 +24,6 @@ function ExcelDataStream(
     skipstart::Int = 0,
     nastrings::Vector{String} = String[],
 )
-    rawdata = HTTP.request( "GET", url );
-    
-    filename = tempname()
-    open( filename, "w") do file
-        write( file, rawdata.body )
-    end
-
     global initialized
     if !initialized
         Taro.init()
