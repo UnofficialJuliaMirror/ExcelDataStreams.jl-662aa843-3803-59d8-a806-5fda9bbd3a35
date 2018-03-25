@@ -1,11 +1,9 @@
 module ExcelDataStreams
 
 # package code goes here
-using HTTP
 using DataStreams
 using Taro
 using DataFrames
-using DataStructures
 using DataArrays
 
 initialized = false
