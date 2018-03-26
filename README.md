@@ -7,6 +7,12 @@ ExcelDataStream( filename::AbstractString )
 
 Constructor for type which gives access to an Excel file as a DataStream
 
+**Arguments**
 
-<a target='_blank' href='https://github.com/atteson/ExcelDataStreams.jl/blob/5359a1beb0c2979445f680a5a9db0281054c7801/src/ExcelDataStreams.jl#L17-L21' class='documenter-source'>source</a><br>
+  * `filename::AbstractString` : the name of the Excel file to stream
+
+**Keyword Arguments**
+
+
+<a target='_blank' href='https://github.com/atteson/ExcelDataStreams.jl/blob/15a6f3ef1cbe3e3af6eaff39ce2e5d5c62a3a368/src/ExcelDataStreams.jl#L17-L27' class='documenter-source'>source</a><br>
 

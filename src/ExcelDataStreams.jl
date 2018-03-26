@@ -18,6 +18,12 @@ end
 ExcelDataStream( filename::AbstractString )
 
 Constructor for type which gives access to an Excel file as a DataStream
+
+### Arguments
+
+* `filename::AbstractString` : the name of the Excel file to stream
+
+### Keyword Arguments
 """
 function ExcelDataStream(
     filename::AbstractString,
