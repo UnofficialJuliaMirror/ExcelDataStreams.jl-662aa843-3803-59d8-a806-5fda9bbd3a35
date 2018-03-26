@@ -6,12 +6,19 @@ using Taro
 using DataFrames
 using DataArrays
 
+export ExcelDataStream
+
 initialized = false
 
 type ExcelDataStream <: Data.Source
     data::DataFrame
 end
 
+"""
+ExcelDataStream( filename::AbstractString, kwargs... )
+
+Constructor for type which gives access to an Excel file as a DataStream
+"""
 function ExcelDataStream(
     filename::AbstractString,
     ;
