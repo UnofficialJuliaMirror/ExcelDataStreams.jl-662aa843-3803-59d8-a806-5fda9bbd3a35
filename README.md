@@ -3,7 +3,7 @@
 
 
 
-ExcelDataStream( filename::AbstractString )
+`ExcelDataStream( filename::AbstractString; kwargs... )`
 
 Constructor for type which gives access to an Excel file as a DataStream
 
@@ -21,5 +21,5 @@ Constructor for type which gives access to an Excel file as a DataStream
   * `nastrings::Vector{String}` – Strings to consider to be missing data.  Defaults to empty.
 
 
-<a target='_blank' href='https://github.com/atteson/ExcelDataStreams.jl/blob/4dd9db78e27b51c2dfd1806a0fcd5b41580e2c06/src/ExcelDataStreams.jl#L17-L34' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/atteson/ExcelDataStreams.jl/blob/8e330698937a45cc65112c082a2a0f1244936496/src/ExcelDataStreams.jl#L17-L34' class='documenter-source'>source</a><br>
 
