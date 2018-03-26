@@ -15,7 +15,7 @@ type ExcelDataStream <: Data.Source
 end
 
 """
-ExcelDataStream( filename::AbstractString, kwargs... )
+ExcelDataStream( filename::AbstractString )
 
 Constructor for type which gives access to an Excel file as a DataStream
 """
