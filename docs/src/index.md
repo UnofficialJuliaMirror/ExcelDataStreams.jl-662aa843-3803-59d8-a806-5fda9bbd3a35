@@ -1,0 +1,3 @@
+```@docs
+ExcelDataStream( filename::AbstractString )
+```
