@@ -6,6 +6,10 @@ makedocs(
     pages = ["Home" => "index.md"],
 )
 
+println( "\n\n*** ENVIRONMENT BEGIN ***\n\n" )
+showall( ENV )
+println( "\n\n*** ENVIRONMENT END ***\n\n" )
+
 deploydocs(
     repo = "github.com/atteson/ExcelDataStreams.jl",
     target = "build",
