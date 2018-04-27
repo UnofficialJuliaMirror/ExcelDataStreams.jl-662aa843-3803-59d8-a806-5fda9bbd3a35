@@ -4,6 +4,7 @@ makedocs(
     format = :html,
     sitename = "ExcelDataStreams.jl",
     pages = ["Home" => "index.md"],
+    clean = true,
 )
 
 deploydocs(
