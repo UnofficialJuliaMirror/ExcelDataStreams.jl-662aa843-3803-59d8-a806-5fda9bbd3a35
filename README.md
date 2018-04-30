@@ -1,5 +1,9 @@
-DataFrames.jl
+ExcelDataStreams.jl
 =============
+
+Function to turn an Excel file into a DataStream.
+
+**Installation**: at the Julia REPL, `Pkg.add("ExcelDataStreams")`
 
 **Documentation**: [![][docs-stable-img]][docs-stable-url] [![][docs-latest-img]][docs-latest-url]
 
